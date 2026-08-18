@@ -34,6 +34,11 @@ function activate(context) {
 		}
 		const selected = await vscode.window.showQuickPick(list);
 		console.log(selected);
+		if (!selected) {
+			return;
+		}
+		const uri = selected.uri;
+		let success = await vscode.commands.executeCommand('vscode.openFolder', uri);
 	});
 
 	context.subscriptions.push(disposable);
