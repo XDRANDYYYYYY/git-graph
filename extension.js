@@ -17,6 +17,13 @@ function activate(context) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
+	const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
+    if (gitExtension) {
+        const api = gitExtension.getAPI(1);
+        if (api.repositories.length > 0) {
+            const repo = api.repositories[0];
+        }
+    }
 	const disposable = vscode.commands.registerCommand('git-graph.helloWorld', async function () {
 		const gitExtension = vscode.extensions.getExtension('vscode.git')?.exports;
 		if (!gitExtension) {
@@ -38,9 +45,11 @@ function activate(context) {
 			return;
 		}
 		const uri = selected.uri;
-		let success = await vscode.commands.executeCommand('vscode.openFolder', uri);
+		let success = await vscode.commands.executeCommand('vscode.openFolder', uri, { forceNewWindow: true });
+		if (!success) {
+			return;
+		}
 	});
-
 	context.subscriptions.push(disposable);
 }
 
